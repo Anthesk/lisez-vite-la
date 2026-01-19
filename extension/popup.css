@@ -51,7 +51,7 @@ body {
   width: 100%;
   display: flex;
   align-items: baseline;
-  font-size: 32px;
+  font-size: 64px;
   font-family:
     "Courier New", Courier, monospace;
   user-select: none;
