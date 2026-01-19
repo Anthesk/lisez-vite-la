@@ -4,6 +4,7 @@ let words = [];
 let currentIndex = 0;
 let isPlaying = false;
 let wpm = 300;
+let pauseOnPunctuation = true;
 let timer = null;
 
 const elements = {
@@ -12,6 +13,7 @@ const elements = {
     restartBtn: document.getElementById('btn-restart'),
     wpmSlider: document.getElementById('wpm-slider'),
     wpmDisplay: document.getElementById('wpm-display'),
+    punctuationCheck: document.getElementById('check-punctuation'),
     progressFill: document.getElementById('progress-fill'),
     progressText: document.getElementById('progress-text')
 };
@@ -20,6 +22,7 @@ const elements = {
 elements.playBtn.addEventListener('click', togglePlay);
 elements.restartBtn.addEventListener('click', restart);
 elements.wpmSlider.addEventListener('input', (e) => updateSpeed(e.target.value));
+elements.punctuationCheck.addEventListener('change', (e) => updatePunctuationSetting(e.target.checked));
 
 // Keyboard Shortcuts
 document.addEventListener('keydown', (e) => {
@@ -43,11 +46,15 @@ document.addEventListener('keydown', (e) => {
 
 function init() {
     // Load Settings
-    chrome.storage.local.get(['wpm'], (result) => {
+    chrome.storage.local.get(['wpm', 'pauseOnPunctuation'], (result) => {
         if (result.wpm) {
             wpm = parseInt(result.wpm, 10);
             elements.wpmDisplay.textContent = `${wpm} WPM`;
             elements.wpmSlider.value = wpm;
+        }
+        if (result.pauseOnPunctuation !== undefined) {
+            pauseOnPunctuation = result.pauseOnPunctuation;
+            elements.punctuationCheck.checked = pauseOnPunctuation;
         }
     });
 
@@ -96,6 +103,11 @@ function updateSpeed(newWpm) {
     chrome.storage.local.set({ wpm: wpm });
 }
 
+function updatePunctuationSetting(checked) {
+    pauseOnPunctuation = checked;
+    chrome.storage.local.set({ pauseOnPunctuation: checked });
+}
+
 function restart() {
     currentIndex = 0;
     renderWord();
@@ -113,9 +125,11 @@ function loop() {
     // 60000 ms / WPM = ms per word
     let delay = 60000 / wpm;
     
-    const currentWord = words[currentIndex];
-    if (currentWord.endsWith('.')) {
-        delay *= 2.0;
+    if (pauseOnPunctuation) {
+        const currentWord = words[currentIndex];
+        if (currentWord.endsWith('.')) {
+            delay *= 2.0;
+        }
     }
 
     timer = setTimeout(() => {
