@@ -1,0 +1,144 @@
+:root {
+  --bg-color: #1a1a1a;
+  --text-color: #eeeeee;
+  --accent-color: #ff4444;
+  --guide-color: #444;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+  width: 400px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 16px;
+}
+
+#reader-container {
+  position: relative;
+  height: 120px;
+  background: #000;
+  border-radius: 8px;
+  border: 1px solid #333;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+#guide-top,
+#guide-bottom {
+  position: absolute;
+  left: 35%;
+  width: 2px;
+  height: 12px;
+  background-color: var(--guide-color);
+  z-index: 5;
+  transform: translateX(-50%);
+}
+#guide-top {
+  top: 0;
+}
+#guide-bottom {
+  bottom: 0;
+}
+
+#word-display {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  font-size: 32px;
+  font-family:
+    "Courier New", Courier, monospace;
+  user-select: none;
+}
+
+.word-prefix {
+  /* 
+     Prefix width = 35% - half a character width.
+  */
+  flex: 0 0 calc(35% - 0.5ch);
+  text-align: right;
+  direction: rtl; 
+  color: #ccc;
+}
+
+.word-orp {
+  color: var(--accent-color);
+  font-weight: bold;
+  flex: 0 0 auto;
+  width: 1ch;
+  text-align: center;
+}
+
+.word-suffix {
+  flex: 1;
+  text-align: left;
+  color: #ccc;
+}
+
+.placeholder {
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+}
+
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+button {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover {
+  background: #444;
+}
+
+.icon-btn {
+  padding: 6px 8px;
+  font-size: 16px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.progress-container {
+  gap: 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+#progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #333;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#progress-fill {
+  width: 0%;
+  height: 100%;
+  background: var(--accent-color);
+  transition: width 0.1s linear;
+}

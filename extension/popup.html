@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div id="reader-container">
+      <!-- Visual guides for the ORP position -->
+      <div id="guide-top"></div>
+      <div id="guide-bottom"></div>
+
+      <div id="word-display">
+        <!-- Content will be injected here -->
+        <div class="placeholder">Select text & open extension</div>
+      </div>
+    </div>
+
+    <div id="controls">
+      <div class="control-row">
+        <button id="btn-restart" class="icon-btn">⏮</button>
+        <button id="btn-play-pause">Play</button>
+        <span id="wpm-display">300 WPM</span>
+      </div>
+      <div class="control-row">
+        <input
+          type="range"
+          id="wpm-slider"
+          min="100"
+          max="1000"
+          step="50"
+          value="300"
+        />
+      </div>
+      <div class="control-row progress-container">
+        <div id="progress-bar">
+          <div id="progress-fill"></div>
+        </div>
+        <span id="progress-text">0%</span>
+      </div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

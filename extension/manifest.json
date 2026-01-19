@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Lisez vite là",
+  "version": "0.1",
+  "description": "Lisez vite là grâce à la Représentation Visuelle Sérielle Rapide et à la mise en exergue du Point de Reconnaissance Optimal.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Lisez vite là"
+  },
+  "icons": {
+    "48": "icons/icon-48.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
