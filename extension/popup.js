@@ -5,6 +5,7 @@ let currentIndex = 0;
 let isPlaying = false;
 let wpm = 300;
 let pauseOnPunctuation = true;
+let punctuationDelay = 2.0;
 let timer = null;
 
 const elements = {
@@ -14,6 +15,8 @@ const elements = {
     wpmSlider: document.getElementById('wpm-slider'),
     wpmDisplay: document.getElementById('wpm-display'),
     punctuationCheck: document.getElementById('check-punctuation'),
+    delaySlider: document.getElementById('delay-slider'),
+    delayDisplay: document.getElementById('delay-display'),
     progressFill: document.getElementById('progress-fill'),
     progressText: document.getElementById('progress-text')
 };
@@ -23,6 +26,7 @@ elements.playBtn.addEventListener('click', togglePlay);
 elements.restartBtn.addEventListener('click', restart);
 elements.wpmSlider.addEventListener('input', (e) => updateSpeed(e.target.value));
 elements.punctuationCheck.addEventListener('change', (e) => updatePunctuationSetting(e.target.checked));
+elements.delaySlider.addEventListener('input', (e) => updateDelay(e.target.value));
 
 // Keyboard Shortcuts
 document.addEventListener('keydown', (e) => {
@@ -46,7 +50,7 @@ document.addEventListener('keydown', (e) => {
 
 function init() {
     // Load Settings
-    chrome.storage.local.get(['wpm', 'pauseOnPunctuation'], (result) => {
+    chrome.storage.local.get(['wpm', 'pauseOnPunctuation', 'punctuationDelay'], (result) => {
         if (result.wpm) {
             wpm = parseInt(result.wpm, 10);
             elements.wpmDisplay.textContent = `${wpm} WPM`;
@@ -55,6 +59,11 @@ function init() {
         if (result.pauseOnPunctuation !== undefined) {
             pauseOnPunctuation = result.pauseOnPunctuation;
             elements.punctuationCheck.checked = pauseOnPunctuation;
+        }
+        if (result.punctuationDelay) {
+            punctuationDelay = parseFloat(result.punctuationDelay);
+            elements.delaySlider.value = punctuationDelay * 10;
+            elements.delayDisplay.textContent = `${punctuationDelay.toFixed(1)}x`;
         }
     });
 
@@ -108,6 +117,12 @@ function updatePunctuationSetting(checked) {
     chrome.storage.local.set({ pauseOnPunctuation: checked });
 }
 
+function updateDelay(val) {
+    punctuationDelay = parseInt(val, 10) / 10;
+    elements.delayDisplay.textContent = `${punctuationDelay.toFixed(1)}x`;
+    chrome.storage.local.set({ punctuationDelay: punctuationDelay });
+}
+
 function restart() {
     currentIndex = 0;
     renderWord();
@@ -127,8 +142,9 @@ function loop() {
     
     if (pauseOnPunctuation) {
         const currentWord = words[currentIndex];
-        if (currentWord.endsWith('.')) {
-            delay *= 2.0;
+        // Check for . ! ?
+        if (currentWord.endsWith('.') || currentWord.endsWith('!') || currentWord.endsWith('?')) {
+            delay *= punctuationDelay;
         }
     }
 
