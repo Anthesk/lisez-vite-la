@@ -21,7 +21,36 @@ elements.playBtn.addEventListener('click', togglePlay);
 elements.restartBtn.addEventListener('click', restart);
 elements.wpmSlider.addEventListener('input', (e) => updateSpeed(e.target.value));
 
+// Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault(); // Prevent scrolling
+        togglePlay();
+    } else if (e.code === 'ArrowRight') {
+        if (!isPlaying && currentIndex < words.length - 1) {
+            currentIndex++;
+            renderWord();
+            updateProgress();
+        }
+    } else if (e.code === 'ArrowLeft') {
+        if (!isPlaying && currentIndex > 0) {
+            currentIndex--;
+            renderWord();
+            updateProgress();
+        }
+    }
+});
+
 function init() {
+    // Load Settings
+    chrome.storage.local.get(['wpm'], (result) => {
+        if (result.wpm) {
+            wpm = parseInt(result.wpm, 10);
+            elements.wpmDisplay.textContent = `${wpm} WPM`;
+            elements.wpmSlider.value = wpm;
+        }
+    });
+
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         if (!tabs[0]) return;
         
@@ -63,6 +92,8 @@ function updatePlayButton() {
 function updateSpeed(newWpm) {
     wpm = parseInt(newWpm, 10);
     elements.wpmDisplay.textContent = `${wpm} WPM`;
+    // Save setting
+    chrome.storage.local.set({ wpm: wpm });
 }
 
 function restart() {

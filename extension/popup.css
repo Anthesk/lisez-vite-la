@@ -63,7 +63,6 @@ body {
   */
   flex: 0 0 calc(35% - 0.5ch);
   text-align: right;
-  direction: rtl; 
   color: #ccc;
 }
 
