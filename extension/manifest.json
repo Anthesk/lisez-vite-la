@@ -8,6 +8,17 @@
     "default_popup": "popup.html",
     "default_title": "Lisez vite là"
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "lisez-vite-la@anthesk",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "protocols": {},
+        "types": {},
+        "required": ["none"]
+      }
+    }
+  },
   "icons": {
     "48": "icons/icon-48.png"
   },
