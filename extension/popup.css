@@ -10,7 +10,7 @@
 }
 
 body {
-  width: 400px;
+  width: 800px;
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -20,7 +20,7 @@ body {
 
 #reader-container {
   position: relative;
-  height: 120px;
+  height: 400px;
   background: #000;
   border-radius: 8px;
   border: 1px solid #333;
