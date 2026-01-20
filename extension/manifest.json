@@ -1,12 +1,21 @@
 {
   "manifest_version": 3,
   "name": "Lisez vite là",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Lisez vite là grâce à la Représentation Visuelle Sérielle Rapide et à la mise en exergue du Point de Reconnaissance Optimal.",
   "permissions": ["activeTab", "scripting", "storage"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Lisez vite là"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L"
+      },
+      "description": "Ouvrir l'extension"
+    }
   },
   "browser_specific_settings": {
     "gecko": {

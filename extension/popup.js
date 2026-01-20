@@ -18,7 +18,9 @@ const elements = {
     delaySlider: document.getElementById('delay-slider'),
     delayDisplay: document.getElementById('delay-display'),
     progressFill: document.getElementById('progress-fill'),
-    progressText: document.getElementById('progress-text')
+    progressText: document.getElementById('progress-text'),
+    shortcutCheck: document.getElementById('check-shortcut'),
+    shortcutContainer: document.getElementById('shortcut-cont')
 };
 
 // Controls Event Listeners
@@ -27,6 +29,7 @@ elements.restartBtn.addEventListener('click', restart);
 elements.wpmSlider.addEventListener('input', (e) => updateSpeed(e.target.value));
 elements.punctuationCheck.addEventListener('change', (e) => updatePunctuationSetting(e.target.checked));
 elements.delaySlider.addEventListener('input', (e) => updateDelay(e.target.value));
+elements.shortcutCheck.addEventListener('change', (e) => toggleShortcut(e.target.checked));
 
 // Keyboard Shortcuts
 document.addEventListener('keydown', (e) => {
@@ -66,6 +69,20 @@ function init() {
             elements.delayDisplay.textContent = `${punctuationDelay.toFixed(1)}x`;
         }
     });
+
+    // Check for Firefox commands API support to enable shortcut toggle
+    if (window.browser && window.browser.commands && window.browser.commands.update) {
+        elements.shortcutContainer.style.display = 'block';
+        window.browser.commands.getAll().then(commands => {
+            const cmd = commands.find(c => c.name === "_execute_action");
+            if (cmd) {
+                elements.shortcutCheck.checked = !!cmd.shortcut;
+                if (cmd.shortcut) {
+                    chrome.storage.local.set({ savedShortcut: cmd.shortcut });
+                }
+            }
+        });
+    }
 
     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         if (!tabs[0]) return;
@@ -121,6 +138,25 @@ function updateDelay(val) {
     punctuationDelay = parseInt(val, 10) / 10;
     elements.delayDisplay.textContent = `${punctuationDelay.toFixed(1)}x`;
     chrome.storage.local.set({ punctuationDelay: punctuationDelay });
+}
+
+function toggleShortcut(checked) {
+    if (!window.browser || !window.browser.commands || !window.browser.commands.update) return;
+
+    if (checked) {
+        chrome.storage.local.get(['savedShortcut'], (result) => {
+            const shortcut = result.savedShortcut || "Ctrl+Shift+L";
+            window.browser.commands.update({
+                name: "_execute_action",
+                shortcut: shortcut
+            });
+        });
+    } else {
+        window.browser.commands.update({
+            name: "_execute_action",
+            shortcut: ""
+        });
+    }
 }
 
 function restart() {
